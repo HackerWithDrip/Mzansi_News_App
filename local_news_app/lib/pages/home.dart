@@ -6,6 +6,7 @@ import 'package:local_news_app/models/category_model.dart';
 import 'package:local_news_app/services/data.dart';
 import 'package:local_news_app/models/slider_model.dart';
 import 'package:local_news_app/services/slider_data.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,6 +19,7 @@ class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
   List<sliderModel> sliders = [];
   ScrollController _scrollController = ScrollController();
+  int activeIndex = 0;
 
   @override
   void initState() {
@@ -59,6 +61,7 @@ class _HomeState extends State<Home> {
         elevation: 0.0,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 70.0,
@@ -81,6 +84,27 @@ class _HomeState extends State<Home> {
           SizedBox(
             height: 15.0,
           ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Breaking News!",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+                Text("View All",
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 15.0,
+          ),
           CarouselSlider.builder(
               itemCount: sliders.length,
               itemBuilder: (context, index, realIndex) {
@@ -89,10 +113,40 @@ class _HomeState extends State<Home> {
                 return buildImage(res!, index, res1!);
               },
               options: CarouselOptions(
-                  height: 200.0,
+                  height: 220.0,
                   autoPlay: true,
                   enlargeCenterPage: true,
-                  enlargeStrategy: CenterPageEnlargeStrategy.height)),
+                  enlargeStrategy: CenterPageEnlargeStrategy.height,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      activeIndex = index;
+                    });
+                  })),
+          SizedBox(
+            height: 15.0,
+          ),
+          Center(child: buildIndicator()),
+          SizedBox(
+            height: 15.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Trending News",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+                Text("View All",
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -105,11 +159,41 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildImage(String image, int index, String name) => Container(
-        child: Image.asset(
-          image,
-          fit: BoxFit.cover,
-          width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      child: Stack(children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Image.asset(
+            image,
+            fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+          ),
         ),
+        Container(
+            height: 300.0,
+            padding: EdgeInsets.only(top: 20.0),
+            margin: EdgeInsets.only(top: 150.0),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0))),
+            child: Text(
+              name,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ))
+      ]));
+
+  Widget buildIndicator() => AnimatedSmoothIndicator(
+        activeIndex: activeIndex,
+        count: sliders.length,
+        effect: WormEffect(
+            dotWidth: 17.5, dotHeight: 10, activeDotColor: Colors.blue),
       );
 }
 
