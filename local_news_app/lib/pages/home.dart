@@ -48,6 +48,7 @@ class _HomeState extends State<Home> {
                   return CategoryTile(
                     image: categories[index].imageUrl,
                     categoryName: categories[index].categoryName,
+                    isFirstItem: index == 0,
                   );
                 }),
           )
@@ -60,12 +61,13 @@ class _HomeState extends State<Home> {
 // List of categories
 class CategoryTile extends StatelessWidget {
   final image, categoryName;
-  CategoryTile({this.image, this.categoryName});
+  final bool isFirstItem;
+  CategoryTile({this.image, this.categoryName, this.isFirstItem = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 10.0),
+      margin: EdgeInsets.only(left: isFirstItem ? 10.0 : 0.0, right: 10.0),
       child: Stack(
         children: [
           ClipRRect(
@@ -81,14 +83,14 @@ class CategoryTile extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6.0),
-                  color: Colors.black26),
+                  color: Colors.black38),
               child: Center(
                 child: Text(
                   categoryName,
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w500),
+                      fontSize: 21.0,
+                      fontWeight: FontWeight.bold),
                 ),
               ))
         ],
