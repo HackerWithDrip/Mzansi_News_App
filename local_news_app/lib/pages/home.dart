@@ -4,6 +4,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:local_news_app/models/category_model.dart';
 import 'package:local_news_app/services/data.dart';
+import 'package:local_news_app/models/slider_model.dart';
+import 'package:local_news_app/services/slider_data.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,11 +16,29 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
+  List<sliderModel> sliders = [];
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     categories = getCategories();
+    sliders = getSliders();
     super.initState();
+  }
+
+  void _scrollToIndex(int index) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final itemWidth = 310.0 + 10.0; // Item width + right margin
+
+    // Calculate the target offset
+    final targetOffset =
+        (index * itemWidth) - (screenWidth / 2) + (itemWidth / 2);
+
+    _scrollController.animateTo(
+      targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -40,25 +60,57 @@ class _HomeState extends State<Home> {
       ),
       body: Column(
         children: [
-          Expanded(
+          Container(
+            height: 70.0,
             child: ListView.builder(
+                controller: _scrollController,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
-                  return CategoryTile(
-                    image: categories[index].imageUrl,
-                    categoryName: categories[index].categoryName,
-                    isFirstItem: index == 0,
+                  return GestureDetector(
+                    onTap: () => _scrollToIndex(index),
+                    child: CategoryTile(
+                      image: categories[index].imageUrl,
+                      categoryName: categories[index].categoryName,
+                      isFirstItem: index == 0,
+                    ),
                   );
                 }),
           ),
+          SizedBox(
+            height: 15.0,
+          ),
           CarouselSlider.builder(
-              itemCount: itemCount, itemBuilder: itemBuilder, options: options)
+              itemCount: sliders.length,
+              itemBuilder: (context, index, realIndex) {
+                String? res = sliders[index].image;
+                String? res1 = sliders[index].name;
+                return buildImage(res!, index, res1!);
+              },
+              options: CarouselOptions(
+                  height: 200.0,
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  enlargeStrategy: CenterPageEnlargeStrategy.height)),
         ],
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Add this
+    super.dispose();
+  }
+
+  Widget buildImage(String image, int index, String name) => Container(
+        child: Image.asset(
+          image,
+          fit: BoxFit.cover,
+          width: MediaQuery.of(context).size.width,
+        ),
+      );
 }
 
 // List of categories
