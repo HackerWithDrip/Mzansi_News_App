@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:local_news_app/models/category_model.dart';
 import 'package:local_news_app/services/data.dart';
@@ -51,7 +52,9 @@ class _HomeState extends State<Home> {
                     isFirstItem: index == 0,
                   );
                 }),
-          )
+          ),
+          CarouselSlider.builder(
+              itemCount: itemCount, itemBuilder: itemBuilder, options: options)
         ],
       ),
     );
