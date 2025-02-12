@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_news_app/pages/home.dart';
+import 'package:local_news_app/pages/landing.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Mzansi News',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // ignore: prefer_const_constructors
-      home: Home(),
+      home: LandingPage(),
     );
   }
 }
