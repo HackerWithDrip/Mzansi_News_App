@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home.dart'; // Import your home page
+import 'package:get/get.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -29,13 +30,24 @@ class _LandingPageState extends State<LandingPage> {
               ),
             ),
             SizedBox(height: 20.0),
-            Text(
-              "Welcome to MzansiNews!",
-              style: TextStyle(
+            RichText(
+              text: TextSpan(
+                style: TextStyle(
                   fontFamily: "OpenSans",
-                  color: Colors.black,
                   fontSize: 28.0,
-                  fontWeight: FontWeight.bold),
+                  fontWeight: FontWeight.bold,
+                ),
+                children: [
+                  TextSpan(
+                    text: "Welcome to Mzansi",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  TextSpan(
+                    text: "News",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 20.0),
             Text(
@@ -55,13 +67,11 @@ class _LandingPageState extends State<LandingPage> {
                   fontWeight: FontWeight.w500),
             ),
             SizedBox(height: 40.0),
-            GestureDetector(
+            InkWell(
               onTap: () {
-                // Navigate to HomePage and replace LandingPage
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
+                Get.to(() => Home(),
+                    transition: Transition.circularReveal,
+                    duration: Duration(seconds: 2));
               },
               child: Container(
                 width: MediaQuery.of(context).size.width / 1.2,

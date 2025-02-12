@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:local_news_app/pages/home.dart';
 import 'package:local_news_app/pages/landing.dart';
+import 'package:get/get.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(GetMaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: LandingPage(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
