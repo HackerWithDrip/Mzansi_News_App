@@ -36,10 +36,18 @@ class News {
   /// Helper function to check if an image URL is valid
   Future<bool> _isValidImage(String url) async {
     try {
-      final response = await http.head(Uri.parse(url));
-      return response.statusCode == 200;
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Check if the response is actually an image
+        String contentType = response.headers['content-type'] ?? '';
+        if (contentType.startsWith('image/')) {
+          return true;
+        }
+      }
     } catch (e) {
-      return false; // If the request fails, assume the image is broken
+      print("Error validating image: $e");
     }
+    return false;
   }
 }
