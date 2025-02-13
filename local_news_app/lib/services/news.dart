@@ -1,30 +1,45 @@
 import 'dart:convert';
-
-import 'package:local_news_app/models/article_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:local_news_app/models/article_model.dart';
 
 class News {
   List<ArticleModel> news = [];
 
   Future<void> getNews() async {
     String url =
-        "https://newsapi.org/v2/everything?q=tesla&from=2025-01-13&sortBy=publishedAt&apiKey=a3577513e7714e469a73d2cd493daaf3";
+        "https://newsapi.org/v2/everything?q=tesla&from=2025-01-13&sortBy=publishedAt&language=en&apiKey=a3577513e7714e469a73d2cd493daaf3";
+
     var response = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(response.body);
 
     if (jsonData['status'] == 'ok') {
-      jsonData["articles"].forEach((element) {
-        if (element["urlToImage"] != null && element["description"] != null) {
-          ArticleModel articleModel = ArticleModel(
+      for (var element in jsonData["articles"]) {
+        String? imageUrl = element["urlToImage"];
+        if (imageUrl != null && element["description"] != null) {
+          bool isImageValid = await _isValidImage(imageUrl);
+          if (isImageValid) {
+            ArticleModel articleModel = ArticleModel(
               title: element['title'],
               description: element['description'],
               url: element['url'],
-              urlToImage: element['urlToImage'],
+              urlToImage: imageUrl,
               content: element['content'],
-              author: element['author']);
-          news.add(articleModel);
+              author: element['author'],
+            );
+            news.add(articleModel);
+          }
         }
-      });
+      }
+    }
+  }
+
+  /// Helper function to check if an image URL is valid
+  Future<bool> _isValidImage(String url) async {
+    try {
+      final response = await http.head(Uri.parse(url));
+      return response.statusCode == 200;
+    } catch (e) {
+      return false; // If the request fails, assume the image is broken
     }
   }
 }

@@ -10,6 +10,7 @@ import 'package:local_news_app/models/slider_model.dart';
 import 'package:local_news_app/services/slider_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:local_news_app/services/news.dart';
+import 'package:local_news_app/pages/article_view.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -62,21 +63,29 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // ignore: prefer_const_constructors
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Mzansi"),
-            Text("News",
+        automaticallyImplyLeading: false,
+        title: Container(
+          width: double.infinity, // Ensures full width
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max, // Ensures full width usage
+            children: [
+              Text("Trendy"),
+              Text(
+                "News",
                 style:
-                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-          ],
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
-        centerTitle: true,
+        centerTitle: true, // Ensures correct centering
         elevation: 0.0,
       ),
       body: _loading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)))
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,6 +185,7 @@ class _HomeState extends State<Home> {
                         itemCount: articles.length,
                         itemBuilder: (context, index) {
                           return BlogTile(
+                              url: articles[index].url!,
                               imageUrl: articles[index].urlToImage!,
                               title: articles[index].title!,
                               desc: articles[index].description!);
@@ -274,13 +284,24 @@ class CategoryTile extends StatelessWidget {
 }
 
 class BlogTile extends StatelessWidget {
-  String imageUrl, title, desc;
-  BlogTile({required this.imageUrl, required this.title, required this.desc});
+  String imageUrl, title, desc, url;
+  BlogTile(
+      {required this.imageUrl,
+      required this.title,
+      required this.desc,
+      required this.url});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ArticleView(
+                      blogUrl: url,
+                    )));
+      },
       child: Container(
         margin: EdgeInsets.only(bottom: 10.0),
         child: Padding(

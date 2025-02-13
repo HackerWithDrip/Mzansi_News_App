@@ -39,7 +39,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
                 children: [
                   TextSpan(
-                    text: "Welcome to Mzansi",
+                    text: "Welcome to Trendy",
                     style: TextStyle(color: Colors.black),
                   ),
                   TextSpan(
@@ -52,7 +52,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             SizedBox(height: 20.0),
             Text(
-              "     Your number one source for news in Mzansi \n     context, keeping you updated with the latest",
+              "     Your number one source for news worldwide, \n             keeping you updated with the latest",
               style: TextStyle(
                   fontFamily: "OpenSans",
                   color: Colors.black54,
@@ -60,7 +60,7 @@ class _LandingPageState extends State<LandingPage> {
                   fontWeight: FontWeight.w500),
             ),
             Text(
-              "news. Azishe ke!",
+              "news headline.",
               style: TextStyle(
                   fontFamily: "OpenSans",
                   color: Colors.black54,
