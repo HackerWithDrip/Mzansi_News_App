@@ -44,7 +44,8 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   TextSpan(
                     text: "News",
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
