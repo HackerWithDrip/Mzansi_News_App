@@ -2,11 +2,13 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:local_news_app/models/article_model.dart';
 import 'package:local_news_app/models/category_model.dart';
 import 'package:local_news_app/services/data.dart';
 import 'package:local_news_app/models/slider_model.dart';
 import 'package:local_news_app/services/slider_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:local_news_app/services/news.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,6 +20,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
   List<sliderModel> sliders = [];
+  List<ArticleModel> articles = [];
+  bool _loading = true;
   ScrollController _scrollController = ScrollController();
   int activeIndex = 0;
 
@@ -26,6 +30,15 @@ class _HomeState extends State<Home> {
     categories = getCategories();
     sliders = getSliders();
     super.initState();
+  }
+
+  getNews() async {
+    News news = News();
+    await news.getNews();
+    articles = news.news;
+    setState(() {
+      _loading = false;
+    });
   }
 
   void _scrollToIndex(int index) {
@@ -210,119 +223,6 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: 20.0,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Material(
-                elevation: 5.0,
-                borderRadius: BorderRadius.circular(10.0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 5.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset(
-                            "images/sport.jpg",
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            width: (MediaQuery.of(context).size.width) / 1.8,
-                            child: Text(
-                                "Lionel Richie to perform at the 2026 FIFA World Cup",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Container(
-                            width: (MediaQuery.of(context).size.width) / 1.8,
-                            child: Text(
-                                "Lionel Richie is set to perform at the 2026 FIFA World Cup with Kendrick Lamar and Snoop Dogg, the singer has confirmed.",
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Material(
-                elevation: 5.0,
-                borderRadius: BorderRadius.circular(10.0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 5.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset(
-                            "images/sport.jpg",
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            width: (MediaQuery.of(context).size.width) / 1.8,
-                            child: Text(
-                                "Lionel Richie to perform at the 2026 FIFA World Cup",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Container(
-                            width: (MediaQuery.of(context).size.width) / 1.8,
-                            child: Text(
-                                "Lionel Richie is set to perform at the 2026 FIFA World Cup with Kendrick Lamar and Snoop Dogg, the singer has confirmed.",
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),
@@ -412,5 +312,14 @@ class CategoryTile extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class BlogTile extends StatelessWidget {
+  const BlogTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
