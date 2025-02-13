@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:local_news_app/models/article_model.dart';
@@ -29,6 +30,7 @@ class _HomeState extends State<Home> {
   void initState() {
     categories = getCategories();
     sliders = getSliders();
+    getNews();
     super.initState();
   }
 
@@ -73,159 +75,115 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 70.0,
-              child: ListView.builder(
-                  controller: _scrollController,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => _scrollToIndex(index),
-                      child: CategoryTile(
-                        image: categories[index].imageUrl,
-                        categoryName: categories[index].categoryName,
-                        isFirstItem: index == 0,
-                      ),
-                    );
-                  }),
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: _loading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Breaking News!",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "OpenSans",
-                          fontWeight: FontWeight.w900)),
-                  Text("View All",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            CarouselSlider.builder(
-                itemCount: sliders.length,
-                itemBuilder: (context, index, realIndex) {
-                  String? res = sliders[index].image;
-                  String? res1 = sliders[index].name;
-                  return buildImage(res!, index, res1!);
-                },
-                options: CarouselOptions(
-                    height: 220.0,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    enlargeStrategy: CenterPageEnlargeStrategy.height,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        activeIndex = index;
-                      });
-                    })),
-            SizedBox(
-              height: 15.0,
-            ),
-            Center(child: buildIndicator()),
-            SizedBox(
-              height: 15.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Trending News",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold)),
-                  Text("View All",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Material(
-                elevation: 5.0,
-                borderRadius: BorderRadius.circular(10.0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 5.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset(
-                            "images/sport.jpg",
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            width: (MediaQuery.of(context).size.width) / 1.8,
-                            child: Text(
-                                "Lionel Richie to perform at the 2026 FIFA World Cup",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Container(
-                            width: (MediaQuery.of(context).size.width) / 1.8,
-                            child: Text(
-                                "Lionel Richie is set to perform at the 2026 FIFA World Cup with Kendrick Lamar and Snoop Dogg, the singer has confirmed.",
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
-                          ),
-                        ],
-                      ),
-                    ],
+                  Container(
+                    height: 70.0,
+                    child: ListView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () => _scrollToIndex(index),
+                            child: CategoryTile(
+                              image: categories[index].imageUrl,
+                              categoryName: categories[index].categoryName,
+                              isFirstItem: index == 0,
+                            ),
+                          );
+                        }),
                   ),
-                ),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Breaking News!",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontFamily: "OpenSans",
+                                fontWeight: FontWeight.w900)),
+                        Text("View All",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  CarouselSlider.builder(
+                      itemCount: sliders.length,
+                      itemBuilder: (context, index, realIndex) {
+                        String? res = sliders[index].image;
+                        String? res1 = sliders[index].name;
+                        return buildImage(res!, index, res1!);
+                      },
+                      options: CarouselOptions(
+                          height: 220.0,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          enlargeStrategy: CenterPageEnlargeStrategy.height,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              activeIndex = index;
+                            });
+                          })),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Center(child: buildIndicator()),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Trending News",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold)),
+                        Text("View All",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Container(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        itemCount: articles.length,
+                        itemBuilder: (context, index) {
+                          return BlogTile(
+                              imageUrl: articles[index].urlToImage!,
+                              title: articles[index].title!,
+                              desc: articles[index].description!);
+                        }),
+                  )
+                ],
               ),
             ),
-            SizedBox(
-              height: 20.0,
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -316,10 +274,73 @@ class CategoryTile extends StatelessWidget {
 }
 
 class BlogTile extends StatelessWidget {
-  const BlogTile({super.key});
+  String imageUrl, title, desc;
+  BlogTile({required this.imageUrl, required this.title, required this.desc});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        margin: EdgeInsets.only(bottom: 10.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Material(
+            elevation: 5.0,
+            borderRadius: BorderRadius.circular(10.0),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        height: 150,
+                        width: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8.0,
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        width: (MediaQuery.of(context).size.width) / 1.8,
+                        child: Text(
+                            maxLines: 2,
+                            title,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) / 1.8,
+                        child: Text(
+                            maxLines: 3,
+                            desc,
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
