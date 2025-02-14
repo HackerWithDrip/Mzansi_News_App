@@ -21,7 +21,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
-  List<sliderModel> sliders = [];
+  List<SliderModel> sliders = [];
   List<ArticleModel> articles = [];
   bool _loading = true;
   ScrollController _scrollController = ScrollController();
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     categories = getCategories();
-    sliders = getSliders();
+    getSlider();
     getNews();
     super.initState();
   }
@@ -42,6 +42,12 @@ class _HomeState extends State<Home> {
     setState(() {
       _loading = false;
     });
+  }
+
+  getSlider() async {
+    Sliders slider = Sliders();
+    await slider.getSlider();
+    sliders = slider.sliders;
   }
 
   void _scrollToIndex(int index) {
@@ -134,10 +140,10 @@ class _HomeState extends State<Home> {
                     height: 15.0,
                   ),
                   CarouselSlider.builder(
-                      itemCount: sliders.length,
+                      itemCount: 5,
                       itemBuilder: (context, index, realIndex) {
-                        String? res = sliders[index].image;
-                        String? res1 = sliders[index].name;
+                        String? res = sliders[index].urlToImage;
+                        String? res1 = sliders[index].title;
                         return buildImage(res!, index, res1!);
                       },
                       options: CarouselOptions(
@@ -208,16 +214,16 @@ class _HomeState extends State<Home> {
       child: Stack(children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
-          child: Image.asset(
-            image,
+          child: CachedNetworkImage(
             fit: BoxFit.cover,
             width: MediaQuery.of(context).size.width,
+            imageUrl: image,
           ),
         ),
         Container(
             height: 300.0,
             padding: EdgeInsets.only(top: 20.0),
-            margin: EdgeInsets.only(top: 150.0),
+            margin: EdgeInsets.only(top: 135.0),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 color: Colors.black45,
@@ -226,9 +232,10 @@ class _HomeState extends State<Home> {
                     bottomRight: Radius.circular(10.0))),
             child: Text(
               name,
+              maxLines: 2,
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ))
@@ -236,7 +243,7 @@ class _HomeState extends State<Home> {
 
   Widget buildIndicator() => AnimatedSmoothIndicator(
         activeIndex: activeIndex,
-        count: sliders.length,
+        count: 5,
         effect: WormEffect(
             dotWidth: 17.5, dotHeight: 10, activeDotColor: Colors.blue),
       );
