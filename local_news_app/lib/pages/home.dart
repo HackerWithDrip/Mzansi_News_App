@@ -11,6 +11,7 @@ import 'package:local_news_app/services/slider_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:local_news_app/services/news.dart';
 import 'package:local_news_app/pages/article_view.dart';
+import 'package:local_news_app/pages/category_news.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -257,34 +258,44 @@ class CategoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: isFirstItem ? 10.0 : 0.0, right: 10.0),
-      child: Stack(
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(6.0),
-              child: Image.asset(
-                image,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CategoryNews(
+                      name: categoryName,
+                    )));
+      },
+      child: Container(
+        margin: EdgeInsets.only(left: isFirstItem ? 10.0 : 0.0, right: 10.0),
+        child: Stack(
+          children: [
+            ClipRRect(
+                borderRadius: BorderRadius.circular(6.0),
+                child: Image.asset(
+                  image,
+                  width: 310.0,
+                  height: 60,
+                  fit: BoxFit.cover,
+                )),
+            Container(
                 width: 310.0,
                 height: 60,
-                fit: BoxFit.cover,
-              )),
-          Container(
-              width: 310.0,
-              height: 60,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.0),
-                  color: Colors.black38),
-              child: Center(
-                child: Text(
-                  categoryName,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 21.0,
-                      fontWeight: FontWeight.bold),
-                ),
-              ))
-        ],
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    color: Colors.black38),
+                child: Center(
+                  child: Text(
+                    categoryName,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 21.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ))
+          ],
+        ),
       ),
     );
   }
