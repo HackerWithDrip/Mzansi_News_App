@@ -6,6 +6,7 @@ class Sliders {
   List<SliderModel> sliders = [];
 
   Future<void> getSlider() async {
+    // Breaking News API
     String url =
         "https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=a3577513e7714e469a73d2cd493daaf3";
 

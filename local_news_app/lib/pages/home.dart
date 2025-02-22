@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:local_news_app/models/article_model.dart';
 import 'package:local_news_app/models/category_model.dart';
+import 'package:local_news_app/pages/all_news.dart';
 import 'package:local_news_app/services/data.dart';
 import 'package:local_news_app/models/slider_model.dart';
 import 'package:local_news_app/services/slider_data.dart';
@@ -129,11 +130,20 @@ class _HomeState extends State<Home> {
                                 fontSize: 20.0,
                                 fontFamily: "OpenSans",
                                 fontWeight: FontWeight.w900)),
-                        Text("View All",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold)),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AllNews(news: "Breaking")));
+                          },
+                          child: Text("View All",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold)),
+                        ),
                       ],
                     ),
                   ),
@@ -174,11 +184,20 @@ class _HomeState extends State<Home> {
                                 color: Colors.black,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold)),
-                        Text("View All",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold)),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AllNews(news: "Trending")));
+                          },
+                          child: Text("View All",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold)),
+                        ),
                       ],
                     ),
                   ),
